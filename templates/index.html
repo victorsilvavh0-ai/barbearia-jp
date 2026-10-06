@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia do JP - Agendamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #121212; color: #f8f9fa; }
+        .card { background-color: #1e1e1e; border: 1px solid #333; }
+        .form-control, .form-select { background-color: #2b2b2b; color: #fff; border: 1px solid #444; }
+        .form-control:focus, .form-select:focus { background-color: #333; color: #fff; border-color: #ffc107; box-shadow: none; }
+        .btn-warning { font-weight: bold; }
+        .btn-success { font-weight: bold; }
+        .footer-credit { font-size: 0.85rem; color: #888; text-align: center; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-lg">
+                    <h2 class="text-center text-warning mb-1">Barbearia do JP</h2>
+                    <p class="text-center text-muted mb-4">Cortes a cada 40 min • Abertura às 09:00</p>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                      {% if messages %}
+                        {% for category, message in messages %}
+                          <div class="alert alert-{{ category }} text-center" role="alert">
+                            {{ message }}
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+                    {% endwith %}
+
+                    <!-- Botão de Confirmação do WhatsApp -->
+                    {% if link_whatsapp %}
+                        <div class="text-center mb-4 p-3 bg-dark rounded border border-success">
+                            <p class="mb-2 text-light">Clique no botão abaixo para enviar o comprovante diretamente no WhatsApp:</p>
+                            <a href="{{ link_whatsapp }}" target="_blank" class="btn btn-success w-100">
+                                📲 Enviar Confirmação via WhatsApp
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- Seleção de Data -->
+                    <form method="GET" action="/" class="mb-4">
+                        <label for="data_busca" class="form-label">Escolha a data:</label>
+                        <input type="date" id="data_busca" name="data" class="form-control" 
+                               value="{{ data_selecionada }}" min="{{ hoje }}" onchange="this.form.submit()">
+                    </form>
+
+                    <hr class="border-secondary">
+
+                    <!-- Formulário de Agendamento -->
+                    <form method="POST" action="/">
+                        <input type="hidden" name="data" value="{{ data_selecionada }}">
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Seu Nome:</label>
+                            <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex: João Silva" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="telefone" class="form-label">Telefone / WhatsApp:</label>
+                            <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(32) 99999-9999" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="horario" class="form-label">Horários Disponíveis:</label>
+                            {% if horarios %}
+                                <select class="form-select" id="horario" name="horario" required>
+                                    <option value="" selected disabled>Selecione um horário</option>
+                                    {% for h in horarios %}
+                                        <option value="{{ h }}">{{ h }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <div class="alert alert-secondary text-center">Não há horários disponíveis nesta data.</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100" {% if not horarios %}disabled{% endif %}>
+                            Confirmar Agendamento
+                        </button>
+                    </form>
+
+                    <!-- Assinatura do Criador -->
+                    <div class="footer-credit">
+                        Criado por <strong>Victor_VT</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
