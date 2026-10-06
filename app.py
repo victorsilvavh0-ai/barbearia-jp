@@ -25,7 +25,7 @@ def init_db():
 def gerar_horarios_dia():
     horarios = []
     inicio = datetime.strptime("09:00", "%H:%M")
-    fim = datetime.strptime("19:00", "%H:%M")
+    fim = datetime.strptime("21:40", "%H:%M")
     duracao = timedelta(minutes=40)
 
     atual = inicio
