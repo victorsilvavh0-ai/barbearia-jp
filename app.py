@@ -49,6 +49,13 @@ def index():
         data = request.form.get('data')
         horario = request.form.get('horario')
 
+
+# Se for domingo, impede o envio
+        if datetime.strptime(data, "%Y-%m-%d").weekday() == 6:
+            flash('Não realizamos agendamentos aos domingos.', 'danger')
+            conn.close()
+            return redirect(url_for('index', data=data))
+
         try:
             cursor.execute(
                 'INSERT INTO agendamentos (cliente_nome, telefone, data, horario) VALUES (?, ?, ?, ?)',
